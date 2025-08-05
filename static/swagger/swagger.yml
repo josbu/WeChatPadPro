@@ -69,19 +69,53 @@ definitions:
     type: object
   CdnUploadVideoRequest:
     properties:
+      AesKey:
+        example: ""
+        type: string
+      CdnThumbAesKey:
+        example: ""
+        type: string
+      CdnThumbImgHeight:
+        format: uint32
+        type: integer
+      CdnThumbImgSize:
+        format: uint32
+        type: integer
+      CdnThumbImgWidth:
+        format: uint32
+        type: integer
+      CdnThumbUrl:
+        example: ""
+        type: string
+      CdnVideoUrl:
+        example: ""
+        type: string
+      Length:
+        format: uint32
+        type: integer
+      Md5:
+        example: ""
+        type: string
+      PlayLength:
+        format: uint32
+        type: integer
       ThumbData:
-        description: ' ThumbData'
+        description: ' 普通上传用'
         example: ""
         type: string
       ToUserName:
         example: ""
         type: string
       VideoData:
-        description: ' 视频数据'
+        description: ' 普通上传用'
         items:
           format: int
           type: integer
         type: array
+      XmlContent:
+        description: ' 直接传xml时用'
+        example: ""
+        type: string
       file:
         description: 上传的文件内容
         type: file
@@ -376,12 +410,27 @@ definitions:
   ExtDeviceLoginConfirmModel:
     properties:
       Url:
-        $ref: '#/definitions/binding:"required,omitempty"`'
+        $ref: '#/definitions/binding:"required"`'
         description: ' 登录URL'
+      Wxid:
+        $ref: '#/definitions/binding:"required"`'
+        description: ' 微信ID'
       string:
-        $ref: '#/definitions/binding:"required,omitempty"`'
+        $ref: '#/definitions/binding:"required"`'
         description: ' 登录URL'
     title: ExtDeviceLoginConfirmModel
+    type: object
+  ExtDeviceLoginConfirmParam:
+    properties:
+      Url:
+        description: ' 登录URL'
+        example: ""
+        type: string
+      Wxid:
+        description: ' 微信ID'
+        example: ""
+        type: string
+    title: ExtDeviceLoginConfirmParam
     type: object
   ExtDeviceLoginModel:
     properties:
@@ -516,6 +565,41 @@ definitions:
     type: object
     x-media-format: video
     x-media-type: true
+  GeMaPayQCodeParam:
+    properties:
+      Money:
+        $ref: '#/definitions/binding:"required"`'
+        description: ' 金额(单位为分)'
+      Name:
+        $ref: '#/definitions/binding:"required"`'
+        description: ' 收款备注'
+      Wxid:
+        $ref: '#/definitions/binding:"required"`'
+        description: ' 微信ID'
+      string:
+        $ref: '#/definitions/binding:"required"`'
+        description: ' 微信ID'
+    title: GeMaPayQCodeParam
+    type: object
+  GeMaSkdPayQCodeParam:
+    properties:
+      Money:
+        $ref: '#/definitions/binding:"required"`'
+        description: ' 金额(单位为分)'
+      Name:
+        $ref: '#/definitions/binding:"required"`'
+        description: ' 收款备注'
+      Remark:
+        $ref: '#/definitions/binding:"required"`'
+        description: ' 收款说明'
+      Wxid:
+        $ref: '#/definitions/binding:"required"`'
+        description: ' 微信ID'
+      string:
+        $ref: '#/definitions/binding:"required"`'
+        description: ' 微信ID'
+    title: GeMaSkdPayQCodeParam
+    type: object
   GenAuthKeyModel:
     properties:
       Count:
@@ -584,6 +668,16 @@ definitions:
         format: uint32
         type: integer
     title: GetContactListModel
+    type: object
+  GetEncryptInfoParam:
+    properties:
+      Wxid:
+        $ref: '#/definitions/binding:"required"`'
+        description: ' 微信ID'
+      string:
+        $ref: '#/definitions/binding:"required"`'
+        description: ' 微信ID'
+    title: GetEncryptInfoParam
     type: object
   GetFriendRelationModel:
     properties:
@@ -706,6 +800,41 @@ definitions:
         type: array
     title: GroupMassMsgTextModel
     type: object
+  HongBaoDetail:
+    properties:
+      Offset:
+        $ref: '#/definitions/binding:"required"`'
+        description: ' 偏移量'
+      Size:
+        $ref: '#/definitions/binding:"required"`'
+        description: ' 大小'
+      Wxid:
+        $ref: '#/definitions/binding:"required"`'
+        description: ' 微信ID'
+      Xml:
+        $ref: '#/definitions/binding:"required"`'
+        description: ' 红包XML数据'
+      int64:
+        $ref: '#/definitions/binding:"required"`'
+        description: ' 大小'
+      string:
+        $ref: '#/definitions/binding:"required"`'
+        description: ' 红包XML数据'
+    title: HongBaoDetail
+    type: object
+  HongBaoParam:
+    properties:
+      Wxid:
+        $ref: '#/definitions/binding:"required"`'
+        description: ' 微信ID'
+      Xml:
+        $ref: '#/definitions/binding:"required"`'
+        description: ' 红包XML数据'
+      string:
+        $ref: '#/definitions/binding:"required"`'
+        description: ' 微信ID'
+    title: HongBaoParam
+    type: object
   InviteChatroomMembersModel:
     properties:
       ChatRoomName:
@@ -801,6 +930,22 @@ definitions:
         type: string
     title: OpenRedEnvelopesModel
     type: object
+  OpenwxhbParam:
+    properties:
+      Encrypt_key:
+        $ref: '#/definitions/binding:"required"`'
+        description: ' 加密密钥'
+      Encrypt_userinfo:
+        $ref: '#/definitions/binding:"required"`'
+        description: ' 加密用户信息'
+      Xml:
+        $ref: '#/definitions/binding:"required"`'
+        description: ' 红包XML数据'
+      string:
+        $ref: '#/definitions/binding:"required"`'
+        description: ' 加密用户信息'
+    title: OpenwxhbParam
+    type: object
   PeopleNearbyModel:
     properties:
       Latitude:
@@ -817,6 +962,23 @@ definitions:
         example: ""
         type: string
     title: PhoneLoginModel
+    type: object
+  PrecheckRequest:
+    properties:
+      '}':
+        example: ""
+        type: string
+      Precheck:
+        $ref: '#/definitions/{'
+      Ticket:
+        example: ""
+        type: string
+      UUID:
+        example: ""
+        type: string
+      struct:
+        $ref: '#/definitions/{'
+    title: PrecheckRequest
     type: object
   QRConnectAuthorizeModel:
     properties:
@@ -931,6 +1093,75 @@ definitions:
         type: string
     title: QWSyncChatRoomModel
     type: object
+  QrydetailwxhbParam:
+    properties:
+      Encrypt_key:
+        $ref: '#/definitions/binding:"required"`'
+        description: ' 加密密钥'
+      Encrypt_userinfo:
+        $ref: '#/definitions/binding:"required"`'
+        description: ' 加密用户信息'
+      Wxid:
+        $ref: '#/definitions/binding:"required"`'
+        description: ' 微信ID'
+      Xml:
+        $ref: '#/definitions/binding:"required"`'
+        description: ' 红包XML数据'
+      string:
+        $ref: '#/definitions/binding:"required"`'
+        description: ' 微信ID'
+    title: QrydetailwxhbParam
+    type: object
+  ReceivewxhbParam:
+    properties:
+      Encrypt_key:
+        $ref: '#/definitions/binding:"required"`'
+        description: ' 加密密钥'
+      Encrypt_userinfo:
+        $ref: '#/definitions/binding:"required"`'
+        description: ' 加密用户信息'
+      InWay:
+        $ref: '#/definitions/binding:"required"`'
+        description: ' 进入方式'
+      Xml:
+        $ref: '#/definitions/binding:"required"`'
+        description: ' 红包XML数据'
+      string:
+        $ref: '#/definitions/binding:"required"`'
+        description: ' 进入方式'
+    title: ReceivewxhbParam
+    type: object
+  RedPacket:
+    properties:
+      Amount:
+        $ref: '#/definitions/binding:"required"`'
+        description: ' 红包金额'
+      Content:
+        $ref: '#/definitions/binding:"required"`'
+        description: ' 红包祝福语'
+      Count:
+        $ref: '#/definitions/binding:"required"`'
+        description: ' 红包个数'
+      From:
+        $ref: '#/definitions/binding:"required"`'
+        description: ' 来源'
+      RedType:
+        $ref: '#/definitions/binding:"required"`'
+        description: ' 红包类型'
+      Username:
+        $ref: '#/definitions/binding:"required"`'
+        description: ' 接收用户名'
+      Wxid:
+        $ref: '#/definitions/binding:"required"`'
+        description: ' 微信ID'
+      string:
+        $ref: '#/definitions/binding:"required"`'
+        description: ' 微信ID'
+      uint32:
+        $ref: '#/definitions/binding:"required"`'
+        description: ' 红包金额'
+    title: RedPacket
+    type: object
   ReplyCommentItem:
     properties:
       NickName:
@@ -950,6 +1181,13 @@ definitions:
         example: ""
         type: string
     title: ReplyCommentItem
+    type: object
+  ResponseData:
+    properties:
+      UUID:
+        example: ""
+        type: string
+    title: ResponseData
     type: object
   RevokeMsgModel:
     properties:
@@ -1242,6 +1480,25 @@ definitions:
         type: string
     title: ShareCardParam
     type: object
+  SjSkdPayQCodeParam:
+    properties:
+      Money:
+        $ref: '#/definitions/binding:"required"`'
+        description: ' 金额(单位为分)'
+      Name:
+        $ref: '#/definitions/binding:"required"`'
+        description: ' 收款备注'
+      Remark:
+        $ref: '#/definitions/binding:"required"`'
+        description: ' 收款说明'
+      Wxid:
+        $ref: '#/definitions/binding:"required"`'
+        description: ' 微信ID'
+      string:
+        $ref: '#/definitions/binding:"required"`'
+        description: ' 微信ID'
+    title: SjSkdPayQCodeParam
+    type: object
   SnsCommentItem:
     properties:
       Content:
@@ -1470,6 +1727,26 @@ definitions:
     type: object
     x-media-format: video
     x-media-type: true
+  SubmitPinRequest:
+    properties:
+      '}':
+        example: ""
+        type: string
+      Pin:
+        example: ""
+        type: string
+      SubmitPin:
+        $ref: '#/definitions/{'
+      Ticket:
+        example: ""
+        type: string
+      UUID:
+        example: ""
+        type: string
+      struct:
+        $ref: '#/definitions/{'
+    title: SubmitPinRequest
+    type: object
   SyncMessageModel:
     properties:
       Count:
@@ -1477,6 +1754,50 @@ definitions:
         format: int
         type: integer
     title: SyncMessageModel
+    type: object
+  TenPayCollectmoneyModel:
+    properties:
+      InvalidTime:
+        $ref: '#/definitions/binding:"required"`'
+        description: ' 失效时间'
+      ToUserName:
+        $ref: '#/definitions/binding:"required"`'
+        description: ' 收款用户名'
+      TransFerId:
+        $ref: '#/definitions/binding:"required"`'
+        description: ' 转账ID'
+      TransactionId:
+        $ref: '#/definitions/binding:"required"`'
+        description: ' 交易ID'
+      Wxid:
+        $ref: '#/definitions/binding:"required"`'
+        description: ' 微信ID'
+      string:
+        $ref: '#/definitions/binding:"required"`'
+        description: ' 收款用户名'
+    title: TenPayCollectmoneyModel
+    type: object
+  TenPayConfirmPreTransfer:
+    properties:
+      BankSerial:
+        $ref: '#/definitions/binding:"required"`'
+        description: ' 付款方式序列号'
+      BankType:
+        $ref: '#/definitions/binding:"required"`'
+        description: ' 付款方式类型'
+      PayPasswd:
+        $ref: '#/definitions/binding:"required"`'
+        description: ' 支付密码'
+      ReqKey:
+        $ref: '#/definitions/binding:"required"`'
+        description: ' 创建转账返回的ReqKey'
+      Wxid:
+        $ref: '#/definitions/binding:"required"`'
+        description: ' 微信ID'
+      string:
+        $ref: '#/definitions/binding:"required"`'
+        description: ' 支付密码'
+    title: TenPayConfirmPreTransfer
     type: object
   TransferGroupOwnerModel:
     properties:
@@ -1619,19 +1940,19 @@ definitions:
   VerificationcodeParam:
     properties:
       Code:
-        description: ' 用户输入的验证码'
+        description: ' 必须，用户输入的验证码'
         example: ""
         type: string
       Data62:
-        description: ' 设备数据'
+        description: ' 可选，后端自动获取，前端无需传递'
         example: ""
         type: string
       Ticket:
-        description: ' 验证票据'
+        description: ' 可选，后端自动补全，前端无需传递'
         example: ""
         type: string
       Uuid:
-        description: ' 用户标识'
+        description: ' 必须，二维码接口返回的唯一标识'
         example: ""
         type: string
     title: VerificationcodeParam
@@ -1654,6 +1975,23 @@ definitions:
         $ref: '#/definitions/binding:"omitempty"`'
         description: ' 用户标识，可选，如果不提供将使用key参数'
     title: VerificationcodeSimpleParam
+    type: object
+  VerifyMethodRequest:
+    properties:
+      '}':
+        example: ""
+        type: string
+      GetVerifyMethod:
+        $ref: '#/definitions/{'
+      Ticket:
+        example: ""
+        type: string
+      UUID:
+        example: ""
+        type: string
+      struct:
+        $ref: '#/definitions/{'
+    title: VerifyMethodRequest
     type: object
   VerifyUserItem:
     properties:
@@ -2602,6 +2940,38 @@ paths:
         "200":
           description: 成功响应
       summary: 获取所有设备key
+      tags:
+      - 管理
+  /admin/accountMessageInfo:
+    get:
+      consumes:
+      - application/json
+      - multipart/form-data
+      parameters:
+      - description: 账号唯一标识
+        in: query
+        name: key
+        type: string
+      responses:
+        "200":
+          description: 成功响应
+      summary: 获取指定账号的消息信息
+      tags:
+      - 管理
+  /admin/multiAccountStatus:
+    get:
+      consumes:
+      - application/json
+      - multipart/form-data
+      parameters:
+      - description: 账号唯一标识
+        in: query
+        name: key
+        type: string
+      responses:
+        "200":
+          description: 成功响应
+      summary: 获取多账号状态和消息推送情况
       tags:
       - 管理
   /applet/AuthMpLogin:
@@ -3837,6 +4207,27 @@ paths:
       summary: A16数据登录
       tags:
       - 登录
+  /login/AutoVerificationcode:
+    post:
+      consumes:
+      - application/json
+      - multipart/form-data
+      parameters:
+      - description: 账号唯一标识
+        in: query
+        name: key
+        type: string
+      - description: 请求参数
+        in: body
+        name: body
+        schema:
+          $ref: '#/definitions/VerificationcodeParam'
+      responses:
+        "200":
+          description: 成功响应
+      summary: 自动处理验证码提交（自动获取ticket）
+      tags:
+      - 登录
   /login/CheckCanSetAlias:
     get:
       consumes:
@@ -3890,7 +4281,7 @@ paths:
       summary: 62账号密码登录
       tags:
       - 登录
-  /login/ExtDeviceLoginConfirmGet:
+  /login/ForceRefreshToken:
     post:
       consumes:
       - application/json
@@ -3900,36 +4291,10 @@ paths:
         in: query
         name: key
         type: string
-      - description: 请求参数
-        in: body
-        name: body
-        schema:
-          $ref: '#/definitions/ExtDeviceLoginConfirmModel'
       responses:
         "200":
           description: 成功响应
-      summary: 获取设备登录确认信息
-      tags:
-      - 登录
-  /login/ExtDeviceLoginConfirmOk:
-    post:
-      consumes:
-      - application/json
-      - multipart/form-data
-      parameters:
-      - description: 账号唯一标识
-        in: query
-        name: key
-        type: string
-      - description: 请求参数
-        in: body
-        name: body
-        schema:
-          $ref: '#/definitions/ExtDeviceLoginConfirmModel'
-      responses:
-        "200":
-          description: 成功响应
-      summary: 确认设备登录
+      summary: '@Router /api/login/ForceRefreshToken [post]'
       tags:
       - 登录
   /login/Get62Data:
@@ -3946,6 +4311,22 @@ paths:
         "200":
           description: 成功响应
       summary: 提取62数据
+      tags:
+      - 登录
+  /login/GetAutoRefreshTokenStatus:
+    get:
+      consumes:
+      - application/json
+      - multipart/form-data
+      parameters:
+      - description: 账号唯一标识
+        in: query
+        name: key
+        type: string
+      responses:
+        "200":
+          description: 成功响应
+      summary: '@Router /api/login/GetAutoRefreshTokenStatus [get]'
       tags:
       - 登录
   /login/GetIWXConnect:
@@ -3998,7 +4379,7 @@ paths:
       responses:
         "200":
           description: 成功响应
-      summary: 获取登录二维码(异地IP用代理)
+      summary: '@Router /api/login/qr/new [post]'
       tags:
       - 登录
   /login/GetLoginQrCodeNewX:
@@ -4019,7 +4400,7 @@ paths:
       responses:
         "200":
           description: 成功响应
-      summary: GetLoginQrCodeNewApi 获取登录二维码(绕过验证码)
+      summary: '@Router /api/login/qr/newx [post]'
       tags:
       - 登录
   /login/GetLoginStatus:
@@ -4173,27 +4554,6 @@ paths:
         "200":
           description: 成功响应
       summary: 获取验证码
-      tags:
-      - 登录
-  /login/YPayVerificationcode:
-    post:
-      consumes:
-      - application/json
-      - multipart/form-data
-      parameters:
-      - description: 账号唯一标识
-        in: query
-        name: key
-        type: string
-      - description: 请求参数
-        in: body
-        name: body
-        schema:
-          $ref: '#/definitions/VerificationcodeSimpleParam'
-      responses:
-        "200":
-          description: 成功响应
-      summary: 提交登录验证码
       tags:
       - 登录
   /message/AddMessageMgr:
@@ -4921,6 +5281,27 @@ paths:
       summary: 修改步数
       tags:
       - 其他
+  /pay/AutoHongBao:
+    post:
+      consumes:
+      - application/json
+      - multipart/form-data
+      parameters:
+      - description: 账号唯一标识
+        in: query
+        name: key
+        type: string
+      - description: 请求参数
+        in: body
+        name: body
+        schema:
+          $ref: '#/definitions/HongBaoParam'
+      responses:
+        "200":
+          description: 成功响应
+      summary: 抢红包
+      tags:
+      - 支付
   /pay/Collectmoney:
     post:
       consumes:
@@ -4942,6 +5323,27 @@ paths:
       summary: 确定收款
       tags:
       - 支付
+  /pay/CollectmoneyNew:
+    post:
+      consumes:
+      - application/json
+      - multipart/form-data
+      parameters:
+      - description: 账号唯一标识
+        in: query
+        name: key
+        type: string
+      - description: 请求参数
+        in: body
+        name: body
+        schema:
+          $ref: '#/definitions/TenPayCollectmoneyModel'
+      responses:
+        "200":
+          description: 成功响应
+      summary: 确认收款
+      tags:
+      - 支付
   /pay/ConfirmPreTransfer:
     post:
       consumes:
@@ -4960,7 +5362,28 @@ paths:
       responses:
         "200":
           description: 成功响应
-      summary: 确认转账(客户端版本过低会无法转账)
+      summary: 确认转账(修复版)
+      tags:
+      - 支付
+  /pay/ConfirmPreTransferNew:
+    post:
+      consumes:
+      - application/json
+      - multipart/form-data
+      parameters:
+      - description: 账号唯一标识
+        in: query
+        name: key
+        type: string
+      - description: 请求参数
+        in: body
+        name: body
+        schema:
+          $ref: '#/definitions/TenPayConfirmPreTransfer'
+      responses:
+        "200":
+          description: 成功响应
+      summary: 确认支付(新版本)
       tags:
       - 支付
   /pay/CreatePreTransfer:
@@ -4982,6 +5405,48 @@ paths:
         "200":
           description: 成功响应
       summary: 创建转账
+      tags:
+      - 支付
+  /pay/GeMaPayQCode:
+    post:
+      consumes:
+      - application/json
+      - multipart/form-data
+      parameters:
+      - description: 账号唯一标识
+        in: query
+        name: key
+        type: string
+      - description: 请求参数
+        in: body
+        name: body
+        schema:
+          $ref: '#/definitions/GeMaPayQCodeParam'
+      responses:
+        "200":
+          description: 成功响应
+      summary: 自定义个人收款二维码
+      tags:
+      - 支付
+  /pay/GeMaSkdPayQCode:
+    post:
+      consumes:
+      - application/json
+      - multipart/form-data
+      parameters:
+      - description: 账号唯一标识
+        in: query
+        name: key
+        type: string
+      - description: 请求参数
+        in: body
+        name: body
+        schema:
+          $ref: '#/definitions/GeMaSkdPayQCodeParam'
+      responses:
+        "200":
+          description: 成功响应
+      summary: 自定义经营个人收款单
       tags:
       - 支付
   /pay/GeneratePayQCode:
@@ -5019,6 +5484,27 @@ paths:
         "200":
           description: 成功响应
       summary: 获取银行卡信息
+      tags:
+      - 支付
+  /pay/GetEncryptInfo:
+    post:
+      consumes:
+      - application/json
+      - multipart/form-data
+      parameters:
+      - description: 账号唯一标识
+        in: query
+        name: key
+        type: string
+      - description: 请求参数
+        in: body
+        name: body
+        schema:
+          $ref: '#/definitions/GetEncryptInfoParam'
+      responses:
+        "200":
+          description: 成功响应
+      summary: 获取加密信息
       tags:
       - 支付
   /pay/GetRedEnvelopesDetail:
@@ -5063,6 +5549,27 @@ paths:
       summary: 查看红包领取列表
       tags:
       - 支付
+  /pay/GetRedPacketListApi:
+    post:
+      consumes:
+      - application/json
+      - multipart/form-data
+      parameters:
+      - description: 账号唯一标识
+        in: query
+        name: key
+        type: string
+      - description: 请求参数
+        in: body
+        name: body
+        schema:
+          $ref: '#/definitions/HongBaoDetail'
+      responses:
+        "200":
+          description: 成功响应
+      summary: 查看红包领取列表(新版本)
+      tags:
+      - 支付
   /pay/OpenRedEnvelopes:
     post:
       consumes:
@@ -5084,6 +5591,90 @@ paths:
       summary: 拆红包
       tags:
       - 支付
+  /pay/Openwxhb:
+    post:
+      consumes:
+      - application/json
+      - multipart/form-data
+      parameters:
+      - description: 账号唯一标识
+        in: query
+        name: key
+        type: string
+      - description: 请求参数
+        in: body
+        name: body
+        schema:
+          $ref: '#/definitions/OpenwxhbParam'
+      responses:
+        "200":
+          description: 成功响应
+      summary: 拆开红包
+      tags:
+      - 支付
+  /pay/Qrydetailwxhb:
+    post:
+      consumes:
+      - application/json
+      - multipart/form-data
+      parameters:
+      - description: 账号唯一标识
+        in: query
+        name: key
+        type: string
+      - description: 请求参数
+        in: body
+        name: body
+        schema:
+          $ref: '#/definitions/QrydetailwxhbParam'
+      responses:
+        "200":
+          description: 成功响应
+      summary: 查看红包详情
+      tags:
+      - 支付
+  /pay/Receivewxhb:
+    post:
+      consumes:
+      - application/json
+      - multipart/form-data
+      parameters:
+      - description: 账号唯一标识
+        in: query
+        name: key
+        type: string
+      - description: 请求参数
+        in: body
+        name: body
+        schema:
+          $ref: '#/definitions/ReceivewxhbParam'
+      responses:
+        "200":
+          description: 成功响应
+      summary: 打开红包
+      tags:
+      - 支付
+  /pay/SjSkdPayQCode:
+    post:
+      consumes:
+      - application/json
+      - multipart/form-data
+      parameters:
+      - description: 账号唯一标识
+        in: query
+        name: key
+        type: string
+      - description: 请求参数
+        in: body
+        name: body
+        schema:
+          $ref: '#/definitions/SjSkdPayQCodeParam'
+      responses:
+        "200":
+          description: 成功响应
+      summary: 自定义商家收款单
+      tags:
+      - 支付
   /pay/WXCreateRedPacket:
     post:
       consumes:
@@ -5103,6 +5694,27 @@ paths:
         "200":
           description: 成功响应
       summary: 创建红包
+      tags:
+      - 支付
+  /pay/WXCreateRedPacketNew:
+    post:
+      consumes:
+      - application/json
+      - multipart/form-data
+      parameters:
+      - description: 账号唯一标识
+        in: query
+        name: key
+        type: string
+      - description: 请求参数
+        in: body
+        name: body
+        schema:
+          $ref: '#/definitions/RedPacket'
+      responses:
+        "200":
+          description: 成功响应
+      summary: 创建红包(新版本)
       tags:
       - 支付
   /qy/QWAcceptChatRoom:
@@ -5562,6 +6174,86 @@ paths:
       summary: 提取全部的企业通讯录
       tags:
       - 企业微信
+  /rabbitmq/error:
+    post:
+      consumes:
+      - application/json
+      - multipart/form-data
+      parameters:
+      - description: 账号唯一标识
+        in: query
+        name: key
+        type: string
+      responses:
+        "200":
+          description: 成功响应
+      summary: '@Router /rabbitmq/error [post]'
+      tags:
+      - /rabbitmq
+  /rabbitmq/log:
+    post:
+      consumes:
+      - application/json
+      - multipart/form-data
+      parameters:
+      - description: 账号唯一标识
+        in: query
+        name: key
+        type: string
+      responses:
+        "200":
+          description: 成功响应
+      summary: '@Router /rabbitmq/log [post]'
+      tags:
+      - /rabbitmq
+  /rabbitmq/publish:
+    post:
+      consumes:
+      - application/json
+      - multipart/form-data
+      parameters:
+      - description: 账号唯一标识
+        in: query
+        name: key
+        type: string
+      responses:
+        "200":
+          description: 成功响应
+      summary: '@Router /rabbitmq/publish [post]'
+      tags:
+      - /rabbitmq
+  /rabbitmq/reconnect:
+    post:
+      consumes:
+      - application/json
+      - multipart/form-data
+      parameters:
+      - description: 账号唯一标识
+        in: query
+        name: key
+        type: string
+      responses:
+        "200":
+          description: 成功响应
+      summary: '@Router /rabbitmq/reconnect [post]'
+      tags:
+      - /rabbitmq
+  /rabbitmq/status:
+    post:
+      consumes:
+      - application/json
+      - multipart/form-data
+      parameters:
+      - description: 账号唯一标识
+        in: query
+        name: key
+        type: string
+      responses:
+        "200":
+          description: 成功响应
+      summary: '@Router /rabbitmq/status [post]'
+      tags:
+      - /rabbitmq
   /sns/DownloadMedia:
     post:
       consumes:
@@ -5921,22 +6613,6 @@ paths:
       - 朋友圈
       x-media-endpoint: true
       x-media-type: image
-  /statistic/reportStatus:
-    post:
-      consumes:
-      - application/json
-      - multipart/form-data
-      parameters:
-      - description: 账号唯一标识
-        in: query
-        name: key
-        type: string
-      responses:
-        "200":
-          description: 成功响应
-      summary: 对应 /statistic/Wechat/reportStatus 接口
-      tags:
-      - /statistic
   /user/ChangePwd:
     post:
       consumes:
@@ -6293,44 +6969,7 @@ paths:
       - 用户
       x-media-endpoint: true
       x-media-type: image
-  /webhook/Config:
-    post:
-      consumes:
-      - application/json
-      - multipart/form-data
-      parameters:
-      - description: 账号唯一标识
-        in: query
-        name: key
-        type: string
-      - description: 请求参数
-        in: body
-        name: body
-        schema:
-          $ref: '#/definitions/WebhookConfig'
-      responses:
-        "200":
-          description: 成功响应
-      summary: 配置Webhook回调地址
-      tags:
-      - Webhook
-  /webhook/Delete:
-    delete:
-      consumes:
-      - application/json
-      - multipart/form-data
-      parameters:
-      - description: 账号唯一标识
-        in: query
-        name: key
-        type: string
-      responses:
-        "200":
-          description: 成功响应
-      summary: 删除Webhook配置
-      tags:
-      - Webhook
-  /webhook/Diagnostics:
+  /webhook/connection:
     get:
       consumes:
       - application/json
@@ -6343,10 +6982,26 @@ paths:
       responses:
         "200":
           description: 成功响应
-      summary: 获取Webhook诊断信息
+      summary: '@Router /webhook/monitor/connection [get]'
       tags:
       - Webhook
-  /webhook/ForceEnableDirectStream:
+  /webhook/heartbeat:
+    get:
+      consumes:
+      - application/json
+      - multipart/form-data
+      parameters:
+      - description: 账号唯一标识
+        in: query
+        name: key
+        type: string
+      responses:
+        "200":
+          description: 成功响应
+      summary: '@Router /webhook/monitor/heartbeat [get]'
+      tags:
+      - Webhook
+  /webhook/reconnect:
     post:
       consumes:
       - application/json
@@ -6359,156 +7014,7 @@ paths:
       responses:
         "200":
           description: 成功响应
-      summary: 强制启用直接消息流
-      tags:
-      - Webhook
-  /webhook/HealthCheck:
-    get:
-      consumes:
-      - application/json
-      - multipart/form-data
-      parameters:
-      - description: 账号唯一标识
-        in: query
-        name: key
-        type: string
-      responses:
-        "200":
-          description: 成功响应
-      summary: 检查Webhook连接健康状态
-      tags:
-      - Webhook
-  /webhook/List:
-    get:
-      consumes:
-      - application/json
-      - multipart/form-data
-      parameters:
-      - description: 账号唯一标识
-        in: query
-        name: key
-        type: string
-      responses:
-        "200":
-          description: 成功响应
-      summary: 获取所有Webhook配置
-      tags:
-      - Webhook
-  /webhook/Reinitialize:
-    post:
-      consumes:
-      - application/json
-      - multipart/form-data
-      parameters:
-      - description: 账号唯一标识
-        in: query
-        name: key
-        type: string
-      responses:
-        "200":
-          description: 成功响应
-      summary: 重新初始化Webhook配置
-      tags:
-      - Webhook
-  /webhook/ReinitializeAll:
-    post:
-      consumes:
-      - application/json
-      - multipart/form-data
-      parameters:
-      - description: 账号唯一标识
-        in: query
-        name: key
-        type: string
-      responses:
-        "200":
-          description: 成功响应
-      summary: 重新初始化所有Webhook配置
-      tags:
-      - Webhook
-  /webhook/ResetConnection:
-    post:
-      consumes:
-      - application/json
-      - multipart/form-data
-      parameters:
-      - description: 账号唯一标识
-        in: query
-        name: key
-        type: string
-      responses:
-        "200":
-          description: 成功响应
-      summary: 重置Webhook连接时间戳，只接收重置后的新消息
-      tags:
-      - Webhook
-  /webhook/Status:
-    get:
-      consumes:
-      - application/json
-      - multipart/form-data
-      parameters:
-      - description: 账号唯一标识
-        in: query
-        name: key
-        type: string
-      responses:
-        "200":
-          description: 成功响应
-      summary: 获取Webhook配置状态
-      tags:
-      - Webhook
-  /webhook/Test:
-    get:
-      consumes:
-      - application/json
-      - multipart/form-data
-      parameters:
-      - description: 账号唯一标识
-        in: query
-        name: key
-        type: string
-      responses:
-        "200":
-          description: 成功响应
-      summary: 测试Webhook连通性
-      tags:
-      - Webhook
-  /webhook/Update:
-    put:
-      consumes:
-      - application/json
-      - multipart/form-data
-      parameters:
-      - description: 账号唯一标识
-        in: query
-        name: key
-        type: string
-      - description: 请求参数
-        in: body
-        name: body
-        schema:
-          $ref: '#/definitions/WebhookConfig'
-      responses:
-        "200":
-          description: 成功响应
-      summary: 更新Webhook配置
-      tags:
-      - Webhook
-  /webhook/VerifyDbConfig:
-    get:
-      consumes:
-      - application/json
-      - multipart/form-data
-      parameters:
-      - description: 账号唯一标识
-        in: query
-        name: key
-        type: string
-      responses:
-        "200":
-          description: 成功响应
-      summary: 验证Webhook配置是否成功保存到数据库
+      summary: '@Router /webhook/monitor/reconnect [post]'
       tags:
       - Webhook
   /ws/GetSyncMsg:
@@ -6566,8 +7072,10 @@ tags:
   name: 设备
 - description: /other
   name: 其他
-- description: /statistic
-  name: /statistic
+- description: /monitor
+  name: /monitor
+- description: /rabbitmq
+  name: /rabbitmq
 - description: 文件上传、下载等操作
   name: 文件操作
 - description: 视频上传、转发等操作
