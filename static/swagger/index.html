@@ -1127,6 +1127,41 @@
       margin-bottom: 10px;
       font-size: 14px;
     }
+
+    .qr-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.45); display: flex; align-items: center; justify-content: center; z-index: 9999; }
+    .qr-modal { background: #fff; border-radius: 10px; width: 420px; max-width: 92vw; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+    .qr-header { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; border-bottom: 1px solid #f0f0f0; }
+    .qr-title { font-size: 16px; font-weight: 600; color: #333; }
+    .qr-close { cursor: pointer; color: #999; font-size: 18px; line-height: 1; }
+    .qr-close:hover { color: #e74c3c; }
+    .qr-body { padding: 16px; text-align: center; }
+    .qr-img { width: 260px; height: 260px; object-fit: contain; border-radius: 6px; border: 1px solid #eee; background: #fff; }
+    .qr-meta { margin-top: 12px; color: #666; font-size: 13px; word-break: break-all; text-align: left; }
+    .qr-meta-row { margin: 6px 0; }
+    .qr-status { margin-top: 10px; padding: 8px 10px; border-radius: 6px; text-align: left; font-size: 13px; background: #f9fafb; color: #374151; border: 1px solid #eef2f7; }
+    .qr-status.success { background: #ecfdf5; color: #065f46; border-color: #a7f3d0; }
+    .qr-status.warn { background: #fffbeb; color: #92400e; border-color: #fde68a; }
+    .qr-status.error { background: #fef2f2; color: #991b1b; border-color: #fecaca; }
+    .qr-footer { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; border-top: 1px solid #f0f0f0; }
+    .qr-btn { border: none; padding: 8px 12px; border-radius: 6px; cursor: pointer; font-size: 13px; }
+    .qr-btn-primary { background: #4e54c8; color: #fff; }
+    .qr-btn-primary:hover { background: #3a3fae; }
+    .qr-btn-secondary { background: #f3f4f6; color: #333; }
+    .qr-countdown { color: #4e54c8; font-weight: 600; }
+
+    .qr-detail { margin-top: 10px; padding: 10px; border: 1px dashed #e5e7eb; border-radius: 8px; background: #fff; text-align: left; }
+    .qr-detail-header { display: flex; align-items: center; }
+    .qr-avatar { width: 48px; height: 48px; border-radius: 6px; margin-right: 10px; border: 1px solid #eee; object-fit: cover; }
+    .qr-nick { font-weight: 600; color: #1f2937; }
+    .qr-badge { display: inline-block; padding: 2px 8px; border-radius: 999px; font-size: 12px; margin-left: 6px; }
+    .qr-badge.wait { background: #fffbeb; color: #92400e; }
+    .qr-badge.scan { background: #e0f2fe; color: #075985; }
+    .qr-badge.ok { background: #ecfdf5; color: #065f46; }
+    .qr-badge.err { background: #fef2f2; color: #991b1b; }
+    .qr-detail-list { margin-top: 8px; font-size: 12px; color: #4b5563; }
+    .qr-detail-list .row { margin: 2px 0; }
+    .qr-detail-list .label { color: #6b7280; margin-right: 6px; }
+    .qr-raw { margin-top: 10px; background: #f8fafc; border: 1px solid #eef2f7; border-radius: 6px; padding: 8px; font-size: 12px; color: #334155; max-height: 200px; overflow: auto; }
   </style>
   <!-- 在<head>标签内添加以下内容 -->
   <script>
@@ -1649,6 +1684,244 @@
       document.body.removeChild(textArea);
     }
 
+    function setQrStatus(element, message, type) {
+      if (!element) return;
+      element.className = 'qr-status' + (type ? (' ' + type) : '');
+      element.textContent = message || '';
+    }
+
+    function ensureQrDetailStyles() {
+      if (document.getElementById('qr-login-detail-style')) return;
+      const style = document.createElement('style');
+      style.id = 'qr-login-detail-style';
+      style.textContent = `
+        .qr-detail { margin-top: 10px; padding: 10px; border: 1px dashed #e5e7eb; border-radius: 8px; background: #fff; text-align: left; }
+        .qr-detail-header { display: flex; align-items: center; }
+        .qr-avatar { width: 48px; height: 48px; border-radius: 6px; margin-right: 10px; border: 1px solid #eee; object-fit: cover; }
+        .qr-nick { font-weight: 600; color: #1f2937; }
+        .qr-badge { display: inline-block; padding: 2px 8px; border-radius: 999px; font-size: 12px; margin-left: 6px; }
+        .qr-badge.wait { background: #fffbeb; color: #92400e; }
+        .qr-badge.scan { background: #e0f2fe; color: #075985; }
+        .qr-badge.ok { background: #ecfdf5; color: #065f46; }
+        .qr-badge.err { background: #fef2f2; color: #991b1b; }
+        .qr-detail-list { margin-top: 8px; font-size: 12px; color: #4b5563; }
+        .qr-detail-list .row { margin: 2px 0; }
+        .qr-detail-list .label { color: #6b7280; margin-right: 6px; }
+        .qr-raw { margin-top: 10px; background: #f8fafc; border: 1px solid #eef2f7; border-radius: 6px; padding: 8px; font-size: 12px; color: #334155; max-height: 200px; overflow: auto; }
+      `;
+      document.head.appendChild(style);
+    }
+
+    async function checkQrLoginStatus(payload, statusEl, btnEl, detailEl) {
+      try {
+        if (!payload || !payload.key) {
+          setQrStatus(statusEl, '缺少 key，无法检测扫码状态', 'warn');
+          return;
+        }
+        const base = (window.xxcaibi && window.xxcaibi.BASE_URL ? window.xxcaibi.BASE_URL : '').replace(/\/$/, '');
+        const url = base + '/login/CheckLoginStatus?key=' + encodeURIComponent(payload.key);
+        if (btnEl) { btnEl.disabled = true; btnEl.textContent = '检测中...'; }
+        setQrStatus(statusEl, '正在检测扫码状态...', '');
+        const resp = await fetch(url, { method: 'GET', headers: { 'Accept': 'application/json' } });
+        const text = await resp.text();
+        let json = null;
+        try { json = JSON.parse(text); } catch (_) { json = null; }
+        if (!resp.ok) {
+          setQrStatus(statusEl, '请求失败: ' + resp.status + ' ' + resp.statusText, 'error');
+          return;
+        }
+        if (!json || typeof json !== 'object') {
+          setQrStatus(statusEl, '返回非 JSON 数据: ' + text.slice(0, 300), 'warn');
+          return;
+        }
+        const code = json.Code || json.code;
+        const data = json.Data || json.data || {};
+        const msg = json.Text || json.text || '';
+        // 常见成功条件：Code==200 或 baseResp.ret==0
+        const ret = (data.baseResp && (data.baseResp.ret ?? data.baseResp.code)) ?? (data.ret ?? undefined);
+        const ok = (code == 200) || (ret === 0) || (data.status === 0) || (data.ok === true);
+        const summary = 'Code: ' + code + (ret !== undefined ? (', ret: ' + ret) : '') + (msg ? (', Msg: ' + msg) : '');
+        setQrStatus(statusEl, (ok ? '已登录/已确认。' : '未登录/未确认。') + ' ' + summary, ok ? 'success' : 'warn');
+
+        // 详细信息渲染
+        try {
+          ensureQrDetailStyles();
+          if (detailEl) {
+            const avatar = data.head_img_url || '';
+            const nick = data.nick_name || '';
+            const uuid = data.uuid || data.uuId || '';
+            const state = Number(data.state);
+            const effective = data.effective_time ?? data.expiredTime ?? '';
+            const pushExpire = data.push_login_url_expired_time ?? '';
+            const othersLogin = data.othersInServerLogin;
+            const targetIp = data.tarGetServerIp || '';
+            const unk = data.unknow;
+            const dmsg = data.msg || '';
+            let stateText = '未知状态', badge = 'err';
+            if (state === 0) { stateText = '待扫码'; badge = 'wait'; }
+            else if (state === 1) { stateText = '已扫码待确认'; badge = 'scan'; }
+            else if (state === 2) { stateText = '已确认/已登录'; badge = 'ok'; }
+
+            const headerHtml = `
+              <div class="qr-detail-header">
+                ${avatar ? `<img class="qr-avatar" src="${avatar}" alt="avatar">` : ''}
+                <div>
+                  <div class="qr-nick">${nick || '（未获取昵称）'} ${stateText ? `<span class="qr-badge ${badge}">${stateText}</span>` : ''}</div>
+                  ${uuid ? `<div style="font-size:12px;color:#6b7280;">uuid: ${uuid}</div>` : ''}
+                </div>
+              </div>`;
+
+            const listHtml = `
+              <div class="qr-detail-list">
+                ${typeof effective === 'number' ? `<div class="row"><span class="label">有效期:</span><span>${effective}s</span></div>` : ''}
+                ${typeof pushExpire === 'number' ? `<div class="row"><span class="label">推送登录URL过期:</span><span>${pushExpire}s</span></div>` : ''}
+                ${typeof othersLogin === 'boolean' ? `<div class="row"><span class="label">其他服务已登录:</span><span>${othersLogin ? '是' : '否'}</span></div>` : ''}
+                ${targetIp ? `<div class="row"><span class="label">目标服务器IP:</span><span>${targetIp}</span></div>` : ''}
+                ${typeof unk !== 'undefined' ? `<div class="row"><span class="label">未知标记:</span><span>${unk}</span></div>` : ''}
+                ${dmsg ? `<div class="row"><span class="label">消息:</span><span>${dmsg}</span></div>` : ''}
+              </div>`;
+
+            // 原始 JSON 展示，保证所有字段可见
+            const escapeHtml = (s) => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+            const rawHtml = `<pre class="qr-raw">${escapeHtml(JSON.stringify(data, null, 2))}</pre>`;
+
+            detailEl.innerHTML = `<div class="qr-detail">${headerHtml}${listHtml}${rawHtml}</div>`;
+          }
+        } catch(_) {}
+      } catch (e) {
+        setQrStatus(statusEl, '检测异常: ' + (e && e.message ? e.message : e), 'error');
+      } finally {
+        if (btnEl) { btnEl.disabled = false; btnEl.textContent = '检测扫码状态'; }
+      }
+    }
+
+    // 样式已写入全局 <style>，此函数保留以兼容旧调用
+    function ensureQrPopupStyles() {}
+
+    function closeQrPopup() {
+      const overlay = document.getElementById('qr-login-overlay');
+      if (overlay) overlay.remove();
+      if (window.qrPopupController && window.qrPopupController.timer) {
+        clearInterval(window.qrPopupController.timer);
+        window.qrPopupController.timer = null;
+      }
+    }
+
+    function openQrPopup(payload) {
+      ensureQrPopupStyles();
+      closeQrPopup();
+
+      const overlay = document.createElement('div');
+      overlay.id = 'qr-login-overlay';
+      overlay.className = 'qr-overlay';
+
+      const modal = document.createElement('div');
+      modal.className = 'qr-modal';
+
+      const header = document.createElement('div');
+      header.className = 'qr-header';
+      const title = document.createElement('div');
+      title.className = 'qr-title';
+      title.textContent = '请使用微信扫描二维码登录';
+      const close = document.createElement('div');
+      close.className = 'qr-close';
+      close.innerHTML = '&times;';
+      close.addEventListener('click', closeQrPopup);
+      header.appendChild(title);
+      header.appendChild(close);
+
+      const body = document.createElement('div');
+      body.className = 'qr-body';
+      const img = document.createElement('img');
+      img.className = 'qr-img';
+      const imgSrc = payload.qrCodeBase64 || payload.qrCodeUrl || (payload.qrLink ? ('https://api.pwmqr.com/qrcode/create/?url=' + encodeURIComponent(payload.qrLink)) : '');
+      img.src = imgSrc || '';
+      img.alt = '登录二维码';
+      body.appendChild(img);
+
+      const meta = document.createElement('div');
+      meta.className = 'qr-meta';
+      const keyRow = document.createElement('div'); keyRow.className = 'qr-meta-row'; keyRow.textContent = 'Key: ' + (payload.key || '');
+      const uuidRow = document.createElement('div'); uuidRow.className = 'qr-meta-row'; uuidRow.textContent = 'UUID: ' + (payload.uuid || '');
+      const device = payload.deviceInfo || {};
+      const deviceRow = document.createElement('div'); deviceRow.className = 'qr-meta-row'; deviceRow.textContent = '设备: ' + [device.deviceBrand, device.deviceName].filter(Boolean).join(' / ');
+      const linkRow = document.createElement('div'); linkRow.className = 'qr-meta-row'; linkRow.textContent = '链接: ' + (payload.qrLink || payload.qrCodeUrl || '');
+      meta.appendChild(keyRow);
+      meta.appendChild(uuidRow);
+      if (device.deviceBrand || device.deviceName) meta.appendChild(deviceRow);
+      if (payload.qrLink || payload.qrCodeUrl) meta.appendChild(linkRow);
+      body.appendChild(meta);
+
+      const statusEl = document.createElement('div');
+      statusEl.className = 'qr-status';
+      statusEl.textContent = '';
+      body.appendChild(statusEl);
+      const detailEl = document.createElement('div');
+      body.appendChild(detailEl);
+
+      const footer = document.createElement('div');
+      footer.className = 'qr-footer';
+      const countdown = document.createElement('div');
+      countdown.className = 'qr-countdown';
+      countdown.textContent = '二维码有效期: ' + (payload.expiredTime || 0) + 's';
+
+      const btns = document.createElement('div');
+      const checkBtn = document.createElement('button');
+      checkBtn.className = 'qr-btn qr-btn-primary';
+      checkBtn.textContent = '检测扫码状态';
+      checkBtn.addEventListener('click', function() { checkQrLoginStatus(payload, statusEl, checkBtn, detailEl); });
+
+      const copyBtn = document.createElement('button');
+      copyBtn.className = 'qr-btn qr-btn-secondary';
+      copyBtn.textContent = '复制链接';
+      copyBtn.addEventListener('click', function() {
+        const text = payload.qrLink || payload.qrCodeUrl || '';
+        if (!text) return;
+        try { copy(text); } catch (e) { console.warn(e); }
+      });
+
+      const closeBtn = document.createElement('button');
+      closeBtn.className = 'qr-btn';
+      closeBtn.textContent = '关闭';
+      closeBtn.addEventListener('click', closeQrPopup);
+
+      btns.appendChild(checkBtn);
+      btns.appendChild(copyBtn);
+      btns.appendChild(closeBtn);
+
+      footer.appendChild(countdown);
+      footer.appendChild(btns);
+
+      modal.appendChild(header);
+      modal.appendChild(body);
+      modal.appendChild(footer);
+      overlay.appendChild(modal);
+
+      overlay.addEventListener('click', function(e) {
+        if (e.target === overlay) closeQrPopup();
+      });
+
+      document.body.appendChild(overlay);
+
+      if (!window.qrPopupController) window.qrPopupController = { timer: null };
+      if (window.qrPopupController.timer) clearInterval(window.qrPopupController.timer);
+      let remaining = Number(payload.expiredTime || 0);
+      if (remaining > 0) {
+        window.qrPopupController.timer = setInterval(function() {
+          remaining -= 1;
+          if (remaining <= 0) {
+            countdown.textContent = '二维码已过期，请重新获取';
+            clearInterval(window.qrPopupController.timer);
+            window.qrPopupController.timer = null;
+            return;
+          }
+          countdown.textContent = '二维码有效期: ' + remaining + 's';
+        }, 1000);
+      } else {
+        countdown.textContent = '';
+      }
+    }
+
     // 复制 API 的路径即描述
     function addCopy1(selector) {
       let pathElements;
@@ -1788,6 +2061,148 @@
         maxDisplayedTags: null, // 不限制显示的标签数量
         supportedSubmitMethods: ['get', 'post', 'put', 'delete', 'patch'], // 支持所有方法
         validatorUrl: null, // 禁用验证器
+        requestInterceptor: function(req) {
+          try {
+            if (!req || !req.url) return req;
+            var urlObj;
+            try { urlObj = new URL(req.url, window.location.origin); } catch (e) { return req; }
+            // 已包含 key 则不处理
+            if (urlObj.searchParams.has('key')) return req;
+            var pathName = urlObj.pathname || '';
+            var isAdmin = false;
+            try {
+              if (typeof isAdminApi === 'function') {
+                isAdmin = !!isAdminApi(pathName);
+              } else {
+                isAdmin = /^\/admin\//i.test(pathName);
+              }
+            } catch (_) {}
+            var tokenKey = (window.xxcaibi && window.xxcaibi.TOKEN_KEY) || '';
+            var adminKey = (window.xxcaibi && window.xxcaibi.ADMIN_KEY) || '';
+            var useKey = isAdmin ? (adminKey || tokenKey) : tokenKey;
+            if (useKey) {
+              urlObj.searchParams.set('key', useKey);
+              req.url = urlObj.toString();
+            }
+          } catch (_) {}
+          return req;
+        },
+        responseInterceptor: function(res) {
+          try {
+            const url = (res && (res.url || (res.config && res.config.url))) || '';
+            const isQrNew = /\/login\/GetLoginQrCodeNew(\b|\/|\?|$)/i.test(url) || /\/login\/GetLoginQrCodeNewX(\b|\/|\?|$)/i.test(url);
+            const isShowQr = /\/login\/ShowQrCode(\b|\/|\?|$)/i.test(url);
+            if (isShowQr) {
+              // 处理返回 HTML，解析出二维码图片地址
+              let body = res && (res.data || res.text || res.body);
+              if (body && typeof body === 'string') {
+                try {
+                  const parser = new DOMParser();
+                  const doc = parser.parseFromString(body, 'text/html');
+                  const imgEl = doc.querySelector('#aa img') || doc.querySelector('img');
+                  if (imgEl && imgEl.getAttribute('src')) {
+                    let src = imgEl.getAttribute('src');
+                    if (!/^https?:\/\//i.test(src) && !/^data:/i.test(src)) {
+                      const base = (window.xxcaibi && window.xxcaibi.BASE_URL ? window.xxcaibi.BASE_URL : '').replace(/\/$/, '');
+                      if (!src.startsWith('/')) src = '/' + src;
+                      src = base + src;
+                    }
+                    let key;
+                    try { key = (new URL(url, window.location.origin)).searchParams.get('key') || undefined; } catch(_) {
+                      const m = url && url.match(/[?&]key=([^&#]+)/i); key = m ? decodeURIComponent(m[1]) : undefined;
+                    }
+                    openQrPopup({ qrCodeUrl: src, expiredTime: 0, deviceInfo: {}, key: key });
+                  }
+                } catch (e) {
+                  console.warn('ShowQrCode HTML 解析失败:', e);
+                }
+              }
+              return res;
+            }
+            if (isQrNew) {
+              let body = res && (res.data || res.text || res.body);
+              if (body && typeof body === 'string') {
+                try { body = JSON.parse(body); } catch (e) { body = null; }
+              }
+              if (!body || typeof body !== 'object') return res;
+              const data = body.Data || body.data || {};
+              const payload = {
+                code: body.Code || body.code,
+                text: body.Text || body.text,
+                key: data.Key || data.key,
+                uuid: data.uuid || data.UUID,
+                qrLink: data.QrLink || data.qrLink,
+                qrCodeUrl: data.QrCodeUrl || data.qrCodeUrl,
+                qrCodeBase64: data.qrCodeBase64,
+                expiredTime: data.expiredTime || data.expireSeconds || 0,
+                deviceInfo: data.deviceInfo || {}
+              };
+              const hasImg = payload.qrCodeBase64 || payload.qrCodeUrl || payload.qrLink;
+              if (hasImg) {
+                openQrPopup(payload);
+              }
+              return res;
+            }
+            // 通用二维码响应识别（适配所有带二维码的接口）
+            try {
+              let body = res && (res.data || res.text || res.body);
+              // 1) 直接为 data:image/png;base64,... 的字符串
+              if (body && typeof body === 'string' && /^data:image\/(png|jpeg);base64,/i.test(body.trim())) {
+                openQrPopup({ qrCodeBase64: body.trim(), expiredTime: 0, deviceInfo: {} });
+                return res;
+              }
+              // 2) JSON 格式包含典型二维码字段
+              let json = body;
+              if (body && typeof body === 'string') {
+                try { json = JSON.parse(body); } catch (_) { json = null; }
+              }
+              if (json && typeof json === 'object') {
+                const container = json.Data || json.data || json;
+                if (container && typeof container === 'object') {
+                  const payload = {
+                    key: container.Key || container.key,
+                    uuid: container.uuid || container.UUID,
+                    qrLink: container.QrLink || container.qrLink,
+                    qrCodeUrl: container.QrCodeUrl || container.qrCodeUrl,
+                    qrCodeBase64: container.qrCodeBase64,
+                    expiredTime: container.expiredTime || container.expireSeconds || 0,
+                    deviceInfo: container.deviceInfo || {},
+                  };
+                  if (payload.qrCodeBase64 || payload.qrCodeUrl || payload.qrLink) {
+                    openQrPopup(payload);
+                    return res;
+                  }
+                }
+              }
+              // 3) HTML 中包含明显二维码 img（/qrcode/ 或 weixin 链接 或 pwmqr）
+              if (body && typeof body === 'string' && /<html[\s\S]*<img[\s\S]*>/i.test(body)) {
+                try {
+                  const parser = new DOMParser();
+                  const doc = parser.parseFromString(body, 'text/html');
+                  const img = Array.from(doc.querySelectorAll('img')).find(img => {
+                    const s = (img.getAttribute('src') || '').toLowerCase();
+                    return s.includes('/qrcode/') || s.includes('weixin.qq.com/x/') || s.includes('pwmqr.com/qrcode');
+                  });
+                  if (img) {
+                    let src = img.getAttribute('src');
+                    if (!/^https?:\/\//i.test(src) && !/^data:/i.test(src)) {
+                      const base = (window.xxcaibi && window.xxcaibi.BASE_URL ? window.xxcaibi.BASE_URL : '').replace(/\/$/, '');
+                      if (!src.startsWith('/')) src = '/' + src;
+                      src = base + src;
+                    }
+                    openQrPopup({ qrCodeUrl: src, expiredTime: 0, deviceInfo: {} });
+                    return res;
+                  }
+                } catch (_) {}
+              }
+            } catch (err) {
+              // 忽略通用识别异常，避免影响其他响应
+            }
+          } catch (e) {
+            console.warn('QR popup interceptor error:', e);
+          }
+          return res;
+        },
         onComplete: function () {
           // Swagger-UI 渲染完成后回调; updateSpec 成功也会调用
           // 但是如果数据太多会导致部分 HTML 元素在此时还未加载完成
@@ -1892,6 +2307,10 @@
         // console.log(window.xxcaibi);
 
         ui.specActions.updateQueryParam("key", window.xxcaibi.ADMIN_KEY, true);
+        // 若清空 ADMIN_KEY，则用 TOKEN_KEY 回填 admin 接口
+        if (!window.xxcaibi.ADMIN_KEY && window.xxcaibi.TOKEN_KEY) {
+          ui.specActions.updateQueryParam("key", window.xxcaibi.TOKEN_KEY, true);
+        }
       });
       $('#token-key').change(function () {
         window.xxcaibi.TOKEN_KEY = $(this).val().trim();
@@ -1901,6 +2320,10 @@
         }
 
         ui.specActions.updateQueryParam("key", window.xxcaibi.TOKEN_KEY);
+        // 同步填充 admin 接口（当未设置 ADMIN_KEY 时）
+        if (!window.xxcaibi.ADMIN_KEY) {
+          ui.specActions.updateQueryParam("key", window.xxcaibi.TOKEN_KEY, true);
+        }
       });
       $('.radio-group input[type="radio"]').change(function () {
         let value = $(this).val();
