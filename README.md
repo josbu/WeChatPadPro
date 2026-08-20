@@ -96,7 +96,7 @@
   <h2>您的支持是我們持續更新的動力</h2>
   <p style="font-size: 18px; margin: 20px 0;">🌟 每一份贊助都是對我們最大的鼓勵 🌟</p>
 
-  <a href="https://book.stripe.com/00w6oHbPkc7D1rn0iJ0Jq06">
+  <a href="https://buy.stripe.com/7sY8wP3iO9Zv1rn5D30Jq07">
     <img src="https://img.shields.io/badge/-%F0%9F%92%B0%20%E9%BB%9E%E6%93%8A%E8%B4%8A%E5%8A%A9-00BB00?style=for-the-badge" height="60" width="400" alt="點擊贊助" />
   </a>
 
