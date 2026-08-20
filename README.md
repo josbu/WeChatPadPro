@@ -4,7 +4,7 @@
   <img src="static/doc/4270252wc57e-4b66-9ae3-0a81fc001255.png" alt="WeChatPadPro" width="800px">
 </div>
 
-<h1 align="center">🚀 基於 WeChat Pad 協議的高級管理工具v868</h1>
+<h1 align="center">🚀 基於 WeChat Pad 協議的高級管理工具v875</h1>
 
 <div align="center">
   <strong>🌐 <a href="https://wx.knowhub.cloud/">在線演示系統</a> - 默認密碼:adminkey = 28d21d0f9748172c970ba4c208af5564</strong>
